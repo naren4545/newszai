@@ -10,9 +10,9 @@ export default function Header() {
   // Dummy array for navigation items
   const navItems = [
     { name: "Home", linkTo: "/" },
-    { name: "About Us", linkTo: "/about" },
+    { name: "Videos", linkTo: "/videos" },
     { name: "National Edition", linkTo: "/national" },
-    { name: "Local Edition", linkTo: "/local" },
+    { name: "Local Edition", linkTo: "/local-edition" },
   ];
 
   return (
