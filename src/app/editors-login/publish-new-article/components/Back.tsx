@@ -9,7 +9,7 @@ export default function Back() {
     <Button
           variant="ghost"
           size="sm"
-          className="absolute left-0 top-0 flex items-center text-2xl font-normal"
+          className="absolute left-0 top-0 flex items-center md:text-2xl text-xs font-normal"
           onClick={() => router.back()}
         >
           <ChevronLeft className="h-4 w-4 mr-1" />

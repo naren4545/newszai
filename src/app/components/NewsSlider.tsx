@@ -1,171 +1,134 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { cn } from "@/lib/utils"
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import * as React from 'react'
+import useEmblaCarousel from 'embla-carousel-react'
+import Image from 'next/image'
 
-export interface NewsStory {
-  id: number;
-  title: string;
-  category: string;
-  timestamp: string;
-  image: string;
+interface NewsItem {
+  id: string
+  title: string
+  category: string
+  timeAgo: string
+  description: string
+  imageUrl: string
 }
 
-export const newsStories: NewsStory[] = [
+const newsItems: NewsItem[] = [
   {
-    id: 1,
-    title: "Community Cleanup Initiative Makes an Impact",
-    category: "Community",
-    timestamp: "2 hours ago",
-    image: "/placeholder.svg?height=200&width=300",
-  },
-  {
-    id: 2,
-    title: "Local Arts Festival Draws Record Crowds",
-    category: "Culture",
-    timestamp: "3 hours ago",
-    image: "/placeholder.svg?height=200&width=300",
+    id: '1',
+    title: 'Community Cleanup Initiative Makes an Impact',
+    category: 'Community',
+    timeAgo: '2 hours ago',
+    description: 'Volunteers gathered early this morning at [Park Name] to participate in a community-driven cleanup event. Over 100 people showed up to remove litter, plant trees, and restore the area to its natural beauty.',
+    imageUrl: '/placeholder.svg?height=200&width=200'
   },
   {
-    id: 3,
-    title: "New Community Garden Opens",
-    category: "Community",
-    timestamp: "4 hours ago",
-    image: "/placeholder.svg?height=200&width=300",
-  },
-    {
-    id: 1,
-    title: "Community Cleanup Initiative Makes an Impact",
-    category: "Community",
-    timestamp: "2 hours ago",
-    image: "/placeholder.svg?height=200&width=300",
+    id: '2',
+    title: 'Local Business Expands Operations',
+    category: 'Business',
+    timeAgo: '4 hours ago',
+    description: 'A beloved local business announced plans for expansion today, promising new job opportunities and increased economic growth for the community.',
+    imageUrl: '/placeholder.svg?height=200&width=200'
   },
   {
-    id: 2,
-    title: "Local Arts Festival Draws Record Crowds",
-    category: "Culture",
-    timestamp: "3 hours ago",
-    image: "/placeholder.svg?height=200&width=300",
-  },
-  {
-    id: 3,
-    title: "New Community Garden Opens",
-    category: "Community",
-    timestamp: "4 hours ago",
-    image: "/placeholder.svg?height=200&width=300",
-  },
-];
+    id: '3',
+    title: 'New Park Opens to Public',
+    category: 'Environment',
+    timeAgo: '6 hours ago',
+    description: 'After months of anticipation, the new city park officially opened its gates today, offering residents a beautiful green space for recreation and relaxation.',
+    imageUrl: '/placeholder.svg?height=200&width=200'
+  }
+]
 
-export function NewsSlider() {
-  const [activeIndex, setActiveIndex] = React.useState(0)
-  const [isMobile, setIsMobile] = React.useState(false)
+export default function NewsCarousel() {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+    loop: true,
+    align: 'center',
+    skipSnaps: false,
+      containScroll: "trimSnaps"
+  })
+  const [selectedIndex, setSelectedIndex] = React.useState(0)
+
+  const scrollTo = React.useCallback((index: number) => {
+    emblaApi && emblaApi.scrollTo(index)
+  }, [emblaApi])
+
+  const onSelect = React.useCallback(() => {
+    if (!emblaApi) return
+    setSelectedIndex(emblaApi.selectedScrollSnap())
+  }, [emblaApi, setSelectedIndex])
 
   React.useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768)
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+    if (!emblaApi) return
 
-  const nextSlide = () => {
-    setActiveIndex((current) => (current + 1) % newsStories.length)
-  }
+    onSelect()
+    emblaApi.on('select', onSelect)
+    emblaApi.on('reInit', onSelect)
 
-  const prevSlide = () => {
-    setActiveIndex((current) => (current - 1 + newsStories.length) % newsStories.length)
-  }
-
-  const getSlideIndex = (index: number) => {
-    return (index + newsStories.length) % newsStories.length
-  }
+    return () => {
+      emblaApi.off('select', onSelect)
+      emblaApi.off('reInit', onSelect)
+    }
+  }, [emblaApi, onSelect])
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold text-center mb-8">Latest Local Stories</h2>
-      <div className="relative overflow-x-hidden min-h-[331px]">
-        <div 
-          className="flex transition-transform duration-500 ease-in-out"
-          style={{ 
-            transform: isMobile 
-              ? `translateX(-${activeIndex * 100}%)` 
-              : `translateX(-${activeIndex * 33.333}%)`
-          }}
-        >
-          {[...newsStories, ...newsStories, ...newsStories].map((story, index) => (
+      <h2 className="text-2xl font-bold text-center mb-8">You May Also Like</h2>
+      <div className="overflow-x-hidden py-5" ref={emblaRef}>
+        <div className="flex gap-4">
+          {newsItems.map((item, index) => (
             <div 
-              key={`${story.id}-${index}`} 
-              className={cn(
-                "flex-shrink-0 px-2 transition-all duration-500",
-                isMobile ? "w-full" : "w-1/3"
-              )}
+              key={item.id} 
+              className="flex-[0_0_100%] md:flex-[0_0_50%]  px-4 "
+              style={{
+                opacity: index === selectedIndex ? 1 : 0.5,
+                transform: `scale(${index === selectedIndex ? 1.1 : 1})`,
+              }}
             >
-              <NewsCard 
-                story={story} 
-                isActive={isMobile 
-                  ? index % newsStories.length === activeIndex
-                  : getSlideIndex(index - activeIndex - 1) === 0
-                }
-              />
+              <div className="bg-white rounded-lg shadow-md overflow-hidden h-full">
+                <div className="p-6">
+                  <div className="space-y-4">
+                    <h3 className="text-xl font-bold leading-tight">{item.title}</h3>
+                    <div className="flex items-center gap-2">
+                      <span className="bg-gray-100 text-xs px-2 py-1 rounded-full">
+                        {item.category}
+                      </span>
+                      <span className="text-xs text-gray-500">{item.timeAgo}</span>
+                    </div>
+                    <div className="flex gap-4 items-start">
+                      <div className="relative w-24 h-24 flex-shrink-0">
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.title}
+                          fill
+                          className="object-cover rounded-md"
+                        />
+                      </div>
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
-        
-        <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow-lg hover:bg-white transition-colors z-10"
-          aria-label="Previous slide"
-        >
-          <ChevronLeft className="h-6 w-6" />
-        </button>
-        
-        <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow-lg hover:bg-white transition-colors z-10"
-          aria-label="Next slide"
-        >
-          <ChevronRight className="h-6 w-6" />
-        </button>
       </div>
-
-      <div className="flex justify-center gap-2 mt-8">
-        {newsStories.map((_, index) => (
+      <div className="flex justify-center gap-2 mt-4">
+        {newsItems.map((_, index) => (
           <button
             key={index}
-            onClick={() => setActiveIndex(index)}
-            className={cn(
-              "w-2 h-2 rounded-full transition-colors",
-              activeIndex === index ? "bg-primary" : "bg-gray-300"
-            )}
+            className={`w-2 h-2 rounded-full ${
+              selectedIndex === index ? 'bg-gray-800' : 'bg-gray-300'
+            }`}
+            onClick={() => scrollTo(index)}
             aria-label={`Go to slide ${index + 1}`}
-          />
+          >
+            <span className="sr-only">Go to slide {index + 1}</span>
+          </button>
         ))}
       </div>
     </div>
   )
 }
-
-function NewsCard({ story, isActive }: { story: NewsStory, isActive: boolean }) {
-  return (
-    <div className={cn(
-      "bg-white shadow-md transition-all duration-500 ease-in-out h-full",
-      isActive ? "md:scale-105 opacity-100 z-10" : "md:scale-95 opacity-50"
-    )}>
-      <div className="relative">
-        <img
-          src={story.image}
-          alt=""
-          className="w-full h-48 object-cover"
-        />
-        <span className="absolute top-3 left-3 bg-white text-xs font-semibold py-1 px-2 rounded">
-          {story.category}
-        </span>
-      </div>
-      <div className="p-4">
-        <h3 className="text-lg font-semibold line-clamp-2 mb-2">{story.title}</h3>
-        <p className="text-sm text-gray-500">{story.timestamp}</p>
-      </div>
-    </div>
-  )
-}
-

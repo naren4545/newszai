@@ -9,6 +9,47 @@ interface NewsCardProps {
   }
   
   export default function NewsCard({ imageUrl, category, date, title, description }: NewsCardProps) {
+    
+    
+    const handleShare = async (platform: string) => {
+      const title = "Heavy Rainfall Causes Severe Flooding in Mumbai, Disrupting Daily Life"
+      const url = window.location.href
+  
+      switch (platform) {
+        case 'native':
+          if (navigator.share) {
+            try {
+              await navigator.share({
+                title,
+                url,
+                text: "Read about the severe flooding in Mumbai"
+              })
+            } catch (err) {
+              console.log('Error sharing:', err)
+            }
+          }
+          break
+        case 'facebook':
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank')
+          break
+        case 'twitter':
+          window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`, '_blank')
+          break
+        case 'linkedin':
+          window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`, '_blank')
+          break
+        case 'copy':
+          try {
+            await navigator.clipboard.writeText(url)
+            alert('Link copied to clipboard!')
+          } catch (err) {
+            console.log('Error copying:', err)
+          }
+          break
+      }
+    }
+    
+    
     return (
       <div className="max-w-2xl overflow-hidden rounded-lg bg-white shadow">
         <div className="">
@@ -24,6 +65,7 @@ interface NewsCardProps {
               </span>
             </div>
             <button 
+            onClick={() => handleShare('native')}
               className="rounded-full bg-white/10 p-2 transition-colors hover:bg-white/20"
               aria-label="Share"
             >

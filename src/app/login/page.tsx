@@ -6,6 +6,8 @@ import Link from 'next/link'
 import logo from '../../../public/Final_NewsZai_Logo_Png[1] 1.svg'
 
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation'
+import { tr } from 'framer-motion/client'
 
 async function login(username: string, password:string) {
   const apiUrl = "https:api.newszai.com/api/auth/login"; // Replace with your API URL
@@ -38,8 +40,8 @@ async function login(username: string, password:string) {
     } else {
       console.error("Login failed: No auth token received");
     }
-
-    return data;
+return true
+    
   } catch (error:any) {
     console.error("Error during login:", error.message);
     return null;
@@ -58,13 +60,16 @@ export default function LoginPage() {
     username: '',
     password: ''
   })
-
+  const router =useRouter()
   const handleSubmit =async (e: React.FormEvent) => {
     e.preventDefault()
     // Handle login logic here
 
     const response = await login(formData.username, formData.password)
     console.log('Login submitted:', response)
+    if(response){
+      router.push('/')
+    }
   }
 
   return (

@@ -1,4 +1,4 @@
-import { NewsSlider } from "@/app/components/NewsSlider";
+import NewsCarousel from "@/app/components/NewsSlider";
 import Image from "next/image";
 import Header from "./components/Header";
 import HeroSection from "./components/HeroSection";
@@ -47,7 +47,7 @@ out on what’s happening around you.
  <TodaysEdition/>
  <NewsletterForm/>
  <Footer/>
-<NewsSlider/>
+<NewsCarousel/>
     </div>
    
   );
