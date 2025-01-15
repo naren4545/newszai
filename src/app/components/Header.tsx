@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 import {
   DropdownMenu,
@@ -19,7 +19,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import ProfileDropDown from "./ProfileDropDown";
 import Profile from "../../../public/Profile.svg";
 import ProfileOpen from "../../../public/ProfileOpen.svg";
@@ -29,7 +29,7 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const pathname = usePathname();
-  const token = Cookies.get('authToken');
+  const token = Cookies.get("authToken");
   let isLoggedIn = token ? true : false;
 
   // Dummy array for navigation items
@@ -40,7 +40,7 @@ export default function Header() {
     { name: "Local Edition", linkTo: "/local-edition" },
   ];
 
-  if (checkTokenExpiry('authToken')) {
+  if (checkTokenExpiry("authToken")) {
     console.log("Token is running");
   } else {
     isLoggedIn = false;
@@ -84,21 +84,27 @@ export default function Header() {
                 <DropdownMenu onOpenChange={setIsDropdownOpen}>
                   <DropdownMenuTrigger asChild>
                     <div className="cursor-pointer transition-all ease-in-out duration-300 hover:scale-110">
-                      <Image 
-                        src={isDropdownOpen ? ProfileOpen : Profile} 
-                        alt="Profile" 
-                        // width={40} 
+                      <Image
+                        src={isDropdownOpen ? ProfileOpen : Profile}
+                        alt="Profile"
+                        // width={40}
                         // height={40}
                       />
                     </div>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-[360px] mr-3 rounded-[10px] ">
-                    <ProfileDropDown name="Narendra" email="narenchavn26@gmail.com" />
+                    <ProfileDropDown
+                      name="Narendra"
+                      email="narenchavn26@gmail.com"
+                    />
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
             ) : (
-              <Link href="/login" className="mt-4 w-full bg-gray-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors duration-300">
+              <Link
+                href="/login"
+className="bg-gray-900 text-white px-7 py-2 rounded-[162px] text-2xl font-medium hover:bg-gray-700"
+              >
                 Editor Login
               </Link>
             )}
@@ -166,24 +172,27 @@ export default function Header() {
               <div className="px-3 py-2">
                 <DropdownMenu onOpenChange={setIsDropdownOpen}>
                   <DropdownMenuTrigger asChild>
-                    <div className="cursor-pointer flex items-center"> 
-                      <Image 
-                        src={isDropdownOpen ? ProfileOpen : Profile} 
-                        alt="Profile" 
-                        width={40} 
+                    <div className="cursor-pointer flex items-center">
+                      <Image
+                        src={isDropdownOpen ? ProfileOpen : Profile}
+                        alt="Profile"
+                        width={40}
                         height={40}
                       />
                       <span className="ml-2">Profile</span>
                     </div>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-[360px] mr-3 rounded-[10px] ">
-                    <ProfileDropDown name="Narendra" email="narenchavn26@gmail.com" />
+                    <ProfileDropDown
+                      name="Narendra"
+                      email="narenchavn26@gmail.com"
+                    />
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
             ) : (
-              <Link 
-                href="/login" 
+              <Link
+                href="/login"
                 className="block px-3 py-2 rounded-md text-base font-medium bg-gray-900 text-white hover:bg-gray-700 transition-colors duration-300"
               >
                 Editor Login
@@ -195,4 +204,3 @@ export default function Header() {
     </header>
   );
 }
-
